@@ -1,4 +1,4 @@
-# import shutil
+import shutil
 import tempfile
 
 from django.core.cache import cache
@@ -61,7 +61,7 @@ class ViewsTests(TestCase):
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
-        # shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -210,8 +210,7 @@ class ViewsTests(TestCase):
     def test_follow_check_posts(self):
         '''
         Новая запись пользователя появляется в ленте тех, кто на него подписан
-        и не появляется в ленте тех, кто не подписан.
-        '''
+        и не появляется в ленте тех, кто не подписан.'''
         follower = User.objects.create(username='Follower')
         autoriz_client3 = Client()
         autoriz_client3.force_login(follower)
