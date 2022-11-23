@@ -55,16 +55,13 @@ class ViewsTests(TestCase):
             )
 
     @classmethod
-    def SetUp(cls):
-        cache.clear()
-
-    @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
+        cache.clear()
         user = ViewsTests.user
         post = ViewsTests.post
         templates_pages_names = {
@@ -94,6 +91,7 @@ class ViewsTests(TestCase):
 
     def test_expected_context_with_paginator(self):
         """Передается нужный контекст в страницы с paginator"""
+        cache.clear()
         username = ViewsTests.user
         group = ViewsTests.group
         posts_response = {
@@ -126,6 +124,7 @@ class ViewsTests(TestCase):
 
     def test_image_get_in_context(self):
         '''Тест, что пост создается в бд и передается в контекст'''
+        cache.clear()
         group = self.group
         user = self.user
         small_gif = (
@@ -167,17 +166,17 @@ class ViewsTests(TestCase):
         image_in_fp = first_post.image
         self.assertEqual(image_in_fp, post.image)
 
-    # def test_cache(self):
-    #     Post.objects.all().delete()
-    #     Post.objects.create(
-    #         id=50,
-    #         author=self.user,
-    #         text='Тестовый пост',
-    #     )
-    #     response = self.autoriz_client.get(reverse('posts:index'))
-    #     Post.objects.filter(id=50).delete()
-    #     response2 = self.autoriz_client.get(reverse('posts:index'))
-    #     self.assertEqual(response.content, response2.content)
+    def test_cache(self):
+        Post.objects.all().delete()
+        Post.objects.create(
+            id=50,
+            author=self.user,
+            text='Тестовый пост',
+        )
+        response = self.autoriz_client.get(reverse('posts:index'))
+        Post.objects.filter(id=50).delete()
+        response2 = self.autoriz_client.get(reverse('posts:index'))
+        self.assertEqual(response.content, response2.content)
 
     def test_follow_unfollow(self):
         '''
