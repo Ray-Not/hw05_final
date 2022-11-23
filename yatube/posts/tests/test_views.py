@@ -1,4 +1,4 @@
-import shutil
+# import shutil
 import tempfile
 
 from django.core.cache import cache
@@ -61,7 +61,7 @@ class ViewsTests(TestCase):
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+        # shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
