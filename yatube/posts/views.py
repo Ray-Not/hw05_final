@@ -116,7 +116,7 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     # Подписаться на автора
-    author_object = User.objects.get(username=username)
+    author_object = get_object_or_404(User, username=username)
     context = {
         'following': Follow.objects.filter(
             author=author_object,
@@ -125,13 +125,9 @@ def profile_follow(request, username):
         'author': author_object,
         'page_obj': page_obj(request, author_object.posts.all()),
     }
-    # 2 проверка, если клиент неявно зайдет на profile/<str:username>/follow/
-    if Follow.objects.filter(
-        author=author_object,
-        user=request.user
-    ) or (request.user == author_object):
+    if request.user == author_object:
         return render(request, 'posts/profile.html', context)
-    Follow.objects.create(
+    Follow.objects.get_or_create(
         author=author_object,
         user=request.user
     )
@@ -141,7 +137,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     # Дизлайк, отписка
-    author_object = User.objects.get(username=username)
+    author_object = get_object_or_404(User, username=username)
     context = {
         'following': Follow.objects.filter(
             author=author_object,
@@ -150,12 +146,6 @@ def profile_unfollow(request, username):
         'author': author_object,
         'page_obj': page_obj(request, author_object.posts.all()),
     }
-    # 2 проверка, если клиент неявно зайдет на profile/<str:username>/unfollow/
-    if (not Follow.objects.filter(
-        author=author_object,
-        user=request.user
-    )) or (request.user == author_object):
-        return render(request, 'posts/profile.html', context)
     Follow.objects.filter(
         author=author_object,
         user=request.user
